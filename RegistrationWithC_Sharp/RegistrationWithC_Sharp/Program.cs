@@ -7,15 +7,20 @@ using System.Threading.Tasks;
 //---------------------------------------------------------------------
 namespace TestC_Sharp
 {
+	//---------------------------------------------------------------------
+	struct User
+	{ 
+		public string Name;
+		public string Surname;
+		public int Age;
+		public string Username;
+		public string Password;
+	}
+	//---------------------------------------------------------------------
 	class Program
 	{
-		static string Name;
-		static string Surname;
-		static int Age;
-		static string Username;
-		static string Password;
-		
-		//---------------------------------------------------------------------
+		static List<User> OneUser = new List<User>();
+
 		static string GenerateUserName()
 		{
 			string Buffer = Name;
@@ -65,13 +70,15 @@ namespace TestC_Sharp
 			{
 				try
 				{
+					var user = new User();
 					Console.Clear();
 					Console.Write("Sign Up\nEnter your name:\t");
-					Name = Console.ReadLine();
+					user.Name = Console.ReadLine();
 					Console.Write("Enter your surname:\t");
-					Surname = Console.ReadLine();
+					user.Surname = Console.ReadLine();
 					Console.Write("Enter your age:\t\t");
-					int.TryParse(Console.ReadLine(), out Age);
+					int.TryParse(Console.ReadLine(), out user.Age);
+					OneUser.Add(user);					
 
 					Console.WriteLine("------------------------------------------------------------------------------------\n");
 					Console.Write("Your username is:\t");
