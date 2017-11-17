@@ -4,41 +4,108 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-//---------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------
 namespace TestC_Sharp
 {
-	//---------------------------------------------------------------------
-	struct User
-	{ 
-		public string Name;
-		public string Surname;
-		public int Age;
-		public string Username;
-		public string Password;
-	}
-	//---------------------------------------------------------------------
-	class Program
+    //-----------------------------------------------------------------------------------------------------
+    public struct User
+    {
+        public string Name;
+        public string Surname;
+        public int Age;
+        public string Username;
+        //public StringBuilder Password;
+        public string Password;
+        public string SecretWord;
+
+        //public StringBuilder SetPassword { set { Password = value; } }
+        public string SetPassword { set { Password = value; } }
+    }
+    //-----------------------------------------------------------------------------------------------------
+    class Program
 	{
-		static List<User> OneUser = new List<User>();
+        static int UserCount = 0;
 
-		static string GenerateUserName()
+        static List<User> OneUser = new List<User>();
+
+		static bool Registration(/*bool reg*/)
 		{
-			string Buffer = Name;
-			if (Name.Length > 4)
-				Buffer = Name.Remove(4);
-			Username = Buffer.ToUpper() + '_';
+			//if (reg)
+			//{
+			//	Console.Clear();
+			//	Console.WriteLine("Sign Up\nYou are aleady ready!");
+			//	return reg;
+			//}
+			//else
+			//{
+				try
+				{
+					var user = new User();
+					Console.Clear();
+					Console.Write("Sign Up\nEnter your name:\t\t");
+					user.Name = Console.ReadLine();
+					Console.Write("Enter your surname:\t\t");
+					user.Surname = Console.ReadLine();
+					Console.Write("Enter your age:\t\t\t");
+					int.TryParse(Console.ReadLine(), out user.Age);
+                    Console.Write("Enter secret word for password:\t");
+                    user.SecretWord = Console.ReadLine();
 
-			Buffer = Surname.ToLower();
-			Username += Buffer.Remove(2) + '_' + Age;
+				    Console.WriteLine("------------------------------------------------------------------------------------\n");
+				    Console.Write("Your username is:\t");
 
-			return Username; 
+                    if (user.Name.Length > 4)
+                        user.Username = user.Name.Remove(4);
+                    else
+                        user.Username = user.Name.ToUpper();
+
+                    user.Username = GenerateUserName();
+                    Console.WriteLine(user.Username);
+
+                    Console.Write("Your password is:\t");
+                    user.Password = GeneratePassword();
+                    Console.WriteLine(user.Password);
+                    //user.SetPassword(GeneratePassword());
+                    //user.Password.Clear();
+                    //user.Password = new StringBuilder(Encoder());
+                    user.Password = Encoder();
+					OneUser.Add(user);
+                    UserCount++;
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine(ex.Message);
+					return false;
+				}
+
+				return true;
+//			}
 		}
-		//---------------------------------------------------------------------
-		static string GeneratePassword()
+//-----------------------------------------------------------------------------------------------------
+        static string GenerateUserName()
+		{
+            int index = UserCount;
+
+            string temp;
+            string buffer;
+
+			if (OneUser[index].Name.Length > 4)
+				temp = OneUser[index].Name.Remove(4);
+
+            temp = temp.ToUpper() + '_';
+
+			Buffer = OneUser[index].Surname.ToLower();
+			temp += Buffer.Remove(2) + '_' + OneUser[index].Age;
+
+			return temp; 
+		}
+//-----------------------------------------------------------------------------------------------------
+        static string GeneratePassword()
 		{
 			Random NL = new Random();
 			//Random LL = new Random();
 			bool @switch = false;
+            string temp = "";
 
 			for (int i = 0; i < 8; i++)
 			{
@@ -49,54 +116,42 @@ namespace TestC_Sharp
 
 
 				if (@switch)
-					Password += (char)NL.Next(48, 57);
+                    temp += (char)NL.Next(48, 57);
 				else
-					Password += (char)NL.Next(97, 122);
+                    temp += (char)NL.Next(97, 122);
 
 			}
 
-			return Password;
+			return temp;
 		}
-		//---------------------------------------------------------------------
-		static bool Registration(bool reg)
-		{
-			if (reg)
-			{
-				Console.Clear();
-				Console.WriteLine("Sign Up\nYou are aleady ready!");
-				return reg;
-			}
-			else
-			{
-				try
-				{
-					var user = new User();
-					Console.Clear();
-					Console.Write("Sign Up\nEnter your name:\t");
-					user.Name = Console.ReadLine();
-					Console.Write("Enter your surname:\t");
-					user.Surname = Console.ReadLine();
-					Console.Write("Enter your age:\t\t");
-					int.TryParse(Console.ReadLine(), out user.Age);
-					OneUser.Add(user);					
+        //-----------------------------------------------------------------------------------------------------
+        static string Encoder()
+        {
+            //char[] temp = Convert.ToString(OneUser[UserCount].Password).ToCharArray();
+            char[] temp = OneUser[UserCount].Password.ToCharArray();
 
-					Console.WriteLine("------------------------------------------------------------------------------------\n");
-					Console.Write("Your username is:\t");
-					Console.WriteLine(GenerateUserName());
-					Console.Write("Your password is:\t");
-					Console.WriteLine(GeneratePassword());
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine(ex.Message);
-					return false;
-				}
+            for (int i = 0; i < OneUser[UserCount].Password.Length; i++)
+                temp[i] ^= OneUser[UserCount].SecretWord[i / OneUser[UserCount].SecretWord.Length];
 
-				return true;
-			}
-		}
-		//---------------------------------------------------------------------
-		static void LogIn()
+            string newPas = Convert.ToString(temp);
+
+            return newPas;
+        }
+        //-----------------------------------------------------------------------------------------------------
+        static string Decoder()
+        {
+            //char[] temp = Convert.ToString(OneUser[UserCount].Password).ToCharArray();
+            char[] temp = OneUser[UserCount].Password.ToCharArray();
+
+            for (int i = 0; i < OneUser[UserCount].Password.Length; i++)
+                temp[i] ^= OneUser[UserCount].SecretWord[i / OneUser[UserCount].SecretWord.Length];
+
+            string oldPas = Convert.ToString(temp);
+
+            return oldPas;
+        }
+        //-----------------------------------------------------------------------------------------------------
+        static void LogIn()
 		{
 			Console.Clear();
 			Console.Write("Log In\nEnter username:\t");
@@ -105,22 +160,31 @@ namespace TestC_Sharp
 			string TempPassword = Console.ReadLine();
 
 			Console.WriteLine("------------------------------------------------------------------------------------\n");
-			if (TempPassword == Password && TempUsername == Username)
-				Console.WriteLine($"Welcome, {Name} {Surname}!");
+            User temp = new User();
+            temp = OneUser[UserCount];
+            OneUser.Remove(OneUser[UserCount]);
+            temp.Password = Decoder();
+            OneUser[UserCount] = temp;
+
+            //OneUser[UserCount].Password.Clear();
+            //OneUser[UserCount].Password = new StringBuilder(Decoder());
+
+            if (TempPassword == Convert.ToString(OneUser[UserCount].Password) && TempUsername == OneUser[UserCount].Username)
+				Console.WriteLine($"Welcome, {OneUser[UserCount].Name} {OneUser[UserCount].Surname}!");
 			else
 				Console.WriteLine("Wrong username or password!");
 		}
-		//---------------------------------------------------------------------
-		static void Pause()
+//-----------------------------------------------------------------------------------------------------
+        static void Pause()
 		{
 			Console.Write("Press any key to continue . . . ");
 			Console.ReadKey(true);
 		}
-		//---------------------------------------------------------------------
-		static void Main(string[] args)
+//-----------------------------------------------------------------------------------------------------
+        static void Main(string[] args)
 		{
 			int select;
-			bool registered = false;
+//			bool registered = false;
 
 			while (true)
 			{
@@ -132,7 +196,8 @@ namespace TestC_Sharp
 				switch (select)
 				{
 					case 49: // 1 49 ConsoleKey.DownArrow
-						registered = Registration(registered);
+						//registered = Registration(registered);
+                        Registration();
 						Pause();
 						Console.Clear();
 						break;
@@ -149,3 +214,4 @@ namespace TestC_Sharp
 		}
 	}
 }
+//-----------------------------------------------------------------------------------------------------
