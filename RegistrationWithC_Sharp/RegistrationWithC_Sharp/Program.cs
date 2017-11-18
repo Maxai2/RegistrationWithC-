@@ -15,11 +15,12 @@ namespace TestC_Sharp
 		public int Age;
 		public string Username;
 		//public StringBuilder Password;
-		public string Password;
+		//public string Password;
+        private string Password;
 		public string SecretWord;
 
 		//public StringBuilder SetPassword { set { Password = value; } }
-		//public string SetPassword { set { Password = value; } }
+		public string SetGetPassword { get { return Password; } set { Password = value; } }
 	}
 	//-----------------------------------------------------------------------------------------------------
 	class Program
@@ -62,23 +63,22 @@ namespace TestC_Sharp
 					Console.WriteLine(user.Username);
 
 					Console.Write("Your password is:\t");
-					user.Password = GeneratePassword();
-					Console.WriteLine(user.Password);
+					user.SetGetPassword = GeneratePassword();
+					Console.WriteLine(user.SetGetPassword);
 
-					char[] temp = user.Password.ToCharArray();
+					char[] temp = user.SetGetPassword.ToCharArray();
 
-					for (int i = 0; i < user.Password.Length; i++)
+					for (int i = 0; i < user.SetGetPassword.Length; i++)
 						temp[i] ^= user.SecretWord[i % user.SecretWord.Length];
 
-					user.Password = "";
+					user.SetGetPassword = "";
 
-					for (int i = 0; i < temp.Length; i++)
+					for (int j = 0; j < temp.Length; j++)
 					{
-						//user.Password += " ";
-						user.Password += temp[i];
+						user.SetGetPassword += temp[j];
 					}					
 
-					Console.WriteLine(user.Password);
+					Console.WriteLine(user.SetGetPassword);
 					OneUser.Add(user);
 				}
 				catch (Exception ex)
@@ -163,10 +163,12 @@ namespace TestC_Sharp
 		static void LogIn()
 		{
 			Console.Clear();
-			Console.Write("Log In\nEnter username:\t");
+			Console.Write("Log In\nEnter username:\t\t");
 			string TempUsername = Console.ReadLine();
-			Console.Write("Enter password:\t");
+			Console.Write("Enter password:\t\t");
 			string TempPassword = Console.ReadLine();
+            Console.Write("Enter secret word:\t");
+            string TempSecretWord = Console.ReadLine();
 
 			Console.WriteLine("------------------------------------------------------------------------------------\n");
 			//char[] temp = Convert.ToString(OneUser[UserCount].Password).ToCharArray();
@@ -175,20 +177,26 @@ namespace TestC_Sharp
 			{
 				if (OneUser[i].Username == TempUsername)
 				{
-					char[] stemp = TempPassword.ToCharArray();
+					char[] stemp = OneUser[i].SetGetPassword.ToCharArray();
 
-					for (int j = 0; j < TempPassword.Length; j++)
-						stemp[j] ^= OneUser[i].SecretWord[j % OneUser[i].SecretWord.Length];
+					for (int j = 0; j < OneUser[i].SetGetPassword.Length; j++)
+						stemp[j] ^= TempSecretWord[j % TempSecretWord.Length];
 
-					if (OneUser[i].Password == TempPassword)
+                    User temp = OneUser[i];
+                    temp.SetGetPassword = "";
+                    for (int j = 0; j < stemp.Length; j++)
+                    {
+                        temp.SetGetPassword += stemp[j];
+                    }
+                    OneUser[i] = temp;
+
+					if (OneUser[i].SetGetPassword == TempPassword)
 					{
 						Console.WriteLine($"Welcome, {OneUser[i].Name} {OneUser[i].Surname}!");
 					}
 					else
 						Console.WriteLine("Wrong username or password!");
 				}
-				else
-					Console.WriteLine("Wrong username or password!");
 			}
 		}
 //-----------------------------------------------------------------------------------------------------
