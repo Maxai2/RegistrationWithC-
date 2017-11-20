@@ -11,12 +11,12 @@ namespace RegistrationWithC_Sharp
 	class Program
 	{
 		static List<User> users = new List<User>();
-        static List<Message> message = new List<Message>();
+		static List<Message> message = new List<Message>();
 
-        static string UsersPath = "Logs\\Users.txt";
-        static string MessagePath = "Logs\\Messages.txt";
+		static string UsersPath = "Logs\\Users.txt";
+		static string MessagePath = "Logs\\Messages.txt";
 
-        static string SecretWord = "Qwerty";
+		static string SecretWord = "Qwerty";
 
 		static bool Registration(/*bool reg*/)
 		{
@@ -31,24 +31,24 @@ namespace RegistrationWithC_Sharp
 				try
 				{
 					var user = new User();
-                    Console.Clear();
+					Console.Clear();
 
 					Console.Write("Sign Up\nEnter your name:\t\t");
 					user.Name = Console.ReadLine();
-                    File.AppendAllText(UsersPath, user.Name);    
+					File.AppendAllText(UsersPath, user.Name + '\n');    
 
 					Console.Write("Enter your surname:\t\t");
 					user.Surname = Console.ReadLine();
-                    File.AppendAllText(UsersPath, user.Surname);
+					File.AppendAllText(UsersPath, user.Surname + '\n');
 
-                    Console.Write("Enter your age:\t\t\t");
-                    user.Age = Convert.ToInt32(Console.ReadLine());
-                    File.AppendAllText(UsersPath, user.Age.ToString());
+					Console.Write("Enter your age:\t\t\t");
+					user.Age = Convert.ToInt32(Console.ReadLine());
+					File.AppendAllText(UsersPath, user.Age.ToString() + '\n');
 					//int.TryParse(Console.ReadLine(), out user.Age);
-                    //Console.Write("Enter secret word for password:\t");
-                    //user.SecretWord = Console.ReadLine();
+					//Console.Write("Enter secret word for password:\t");
+					//user.SecretWord = Console.ReadLine();
 
-                    Console.WriteLine("------------------------------------------------------------------------------------\n");
+					Console.WriteLine("------------------------------------------------------------------------------------\n");
 					Console.Write("Your username is:\t");
 
 					if (user.Name.Length > 4)
@@ -59,7 +59,7 @@ namespace RegistrationWithC_Sharp
 					user.Username += user.Surname.ToLower().Remove(2) + '_' + user.Age;
 
 					Console.WriteLine(user.Username);
-                    File.AppendAllText(UsersPath, user.Username);
+					File.AppendAllText(UsersPath, user.Username + '\n');
 
 					Console.Write("Your password is:\t");
 					user.Password = GeneratePassword();
@@ -77,8 +77,8 @@ namespace RegistrationWithC_Sharp
 						user.Password += temp[j];
 					}					
 
-					Console.WriteLine(user.Password);
-                    users.Add(user);
+					//Console.WriteLine(user.Password);
+					users.Add(user);
 				}
 				catch (Exception ex)
 				{
@@ -122,8 +122,8 @@ namespace RegistrationWithC_Sharp
 			string TempUsername = Console.ReadLine();
 			Console.Write("Enter password:\t\t");
 			string TempPassword = Console.ReadLine();
-            Console.Write("Enter secret word:\t");
-            string TempSecretWord = Console.ReadLine();
+			Console.Write("Enter secret word:\t");
+			string TempSecretWord = Console.ReadLine();
 
 			Console.WriteLine("------------------------------------------------------------------------------------\n");
 			//char[] temp = Convert.ToString(OneUser[UserCount].Password).ToCharArray();
@@ -137,13 +137,13 @@ namespace RegistrationWithC_Sharp
 					for (int j = 0; j < users[i].Password.Length; j++)
 						stemp[j] ^= TempSecretWord[j % TempSecretWord.Length];
 
-                    User temp = users[i];
-                    temp.Password = "";
-                    for (int j = 0; j < stemp.Length; j++)
-                    {
-                        temp.Password += stemp[j];
-                    }
-                    users[i] = temp;
+					User temp = users[i];
+					temp.Password = "";
+					for (int j = 0; j < stemp.Length; j++)
+					{
+						temp.Password += stemp[j];
+					}
+					users[i] = temp;
 
 					if (users[i].Password == TempPassword)
 					{
@@ -160,36 +160,76 @@ namespace RegistrationWithC_Sharp
 			Console.Write("Press any key to continue . . . ");
 			Console.ReadKey(true);
 		}
+        //-----------------------------------------------------------------------------------------------------
+        static string[] menuList = {"Sign Up", "Log In", "Exit" };
+
+        static void Menu(int select)
+        {
+            for (int i = 0; i < menuList.Length; i++)
+            {
+                Console.SetCursorPosition(0, i);
+                Console.Write("          ");
+                Console.SetCursorPosition(0, i);
+                if (i == select)
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                else
+                    Console.ForegroundColor = ConsoleColor.Gray;
+
+                Console.WriteLine(menuList[i]);
+            }
+        }
 //-----------------------------------------------------------------------------------------------------
-		static void Main(string[] args)
+        static void Main(string[] args)
 		{
-			int select;
+            int select = 0;
 //			bool registered = false;
 
-			while (true)
+            Console.CursorVisible = false;
+            while (true)
 			{
-				Console.Write("1. Sign Up\n2. Log In\n3. Exit\n>");
+                Menu(select);
+				//Console.WriteLine("1. Sign Up\n2. Log In\n3. Exit");
 
-				//var select = Console.ReadKey(true).Key;
-				select = Console.ReadKey(true).KeyChar;
+                //Console.WriteLine("------------------------------------------------------------------------------------\n");
 
-				switch (select)
+                var key = Console.ReadKey(true).Key;
+                //select = Console.ReadKey(true).KeyChar;
+				switch (key)
 				{
-					case 49: // 1 49 ConsoleKey.DownArrow
-						//registered = Registration(registered);
-						Registration();
-						Pause();
-						Console.Clear();
-						break;
-					case 50: // 2 50 ConsoleKey.UpArrow
-						LogIn();
-						Pause();
-						Console.Clear();
-						break;
-					case 51: // 3 51 ConsoleKey.RightArrow
-						Environment.Exit(0);
-						break;
-				}
+                    case ConsoleKey.DownArrow: // 1 49 ConsoleKey.DownArrow
+                        //registered = Registration(registered);
+                        if (select )
+                        {
+
+                        }
+                        Registration();
+                        Pause();
+                        Console.Clear();
+                        break;
+                    case ConsoleKey.UpArrow: // 2 50 ConsoleKey.UpArrow
+                        LogIn();
+                        Pause();
+                        Console.Clear();
+                        break;
+                    case ConsoleKey.Enter: // 3 51 ConsoleKey.RightArrow
+                        Environment.Exit(0);
+                        break;
+                }
+
+                        //case 49: // 1 49 ConsoleKey.DownArrow
+                        //	//registered = Registration(registered);
+                        //	Registration();
+                        //	Pause();
+                        //	Console.Clear();
+                        //	break;
+                        //case 50: // 2 50 ConsoleKey.UpArrow
+                        //	LogIn();
+                        //	Pause();
+                        //	Console.Clear();
+                        //	break;
+                        //case 51: // 3 51 ConsoleKey.RightArrow
+                        //	Environment.Exit(0);
+                        //	break;
 			}
 		}
 	}
