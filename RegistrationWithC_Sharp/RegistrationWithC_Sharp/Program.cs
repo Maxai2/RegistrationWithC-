@@ -32,24 +32,28 @@ namespace RegistrationWithC_Sharp
 				{
 					var user = new User();
 					Console.Clear();
-
 					Console.Write("Sign Up\nEnter your name:\t\t");
-					user.Name = Console.ReadLine();
-					File.AppendAllText(UsersPath, user.Name + '\n');    
+					string tempCheck = Console.ReadLine();
+					if (tempCheck == "exit")
+						return false;
+					else
+						user.Name = tempCheck;
+					File.AppendAllText(UsersPath, user.Name);    
 
 					Console.Write("Enter your surname:\t\t");
 					user.Surname = Console.ReadLine();
-					File.AppendAllText(UsersPath, user.Surname + '\n');
+					File.AppendAllText(UsersPath, user.Surname);
 
 					Console.Write("Enter your age:\t\t\t");
 					user.Age = Convert.ToInt32(Console.ReadLine());
-					File.AppendAllText(UsersPath, user.Age.ToString() + '\n');
+					File.AppendAllText(UsersPath, user.Age.ToString());
 					//int.TryParse(Console.ReadLine(), out user.Age);
 					//Console.Write("Enter secret word for password:\t");
 					//user.SecretWord = Console.ReadLine();
 
-					Console.WriteLine("------------------------------------------------------------------------------------\n");
-					Console.Write("Your username is:\t");
+					Line();
+					//Console.WriteLine("------------------------------------------------------------------------------------\n");
+					Console.Write("\n\nYour username is:\t");
 
 					if (user.Name.Length > 4)
 						user.Username = user.Name.Remove(4).ToUpper() + '_';
@@ -58,13 +62,17 @@ namespace RegistrationWithC_Sharp
 
 					user.Username += user.Surname.ToLower().Remove(2) + '_' + user.Age;
 
+					Console.ForegroundColor = ConsoleColor.Green;
 					Console.WriteLine(user.Username);
-					File.AppendAllText(UsersPath, user.Username + '\n');
+					Console.ForegroundColor = ConsoleColor.Gray;
+					File.AppendAllText(UsersPath, user.Username);
 
 					Console.Write("Your password is:\t");
 					user.Password = GeneratePassword();
+					Console.ForegroundColor = ConsoleColor.Green;
 					Console.WriteLine(user.Password);
-
+					Console.ForegroundColor = ConsoleColor.Gray;
+					
 					char[] temp = user.Password.ToCharArray();
 
 					for (int i = 0; i < user.Password.Length; i++)
@@ -73,11 +81,10 @@ namespace RegistrationWithC_Sharp
 					user.Password = "";
 
 					for (int j = 0; j < temp.Length; j++)
-					{
 						user.Password += temp[j];
-					}					
 
 					//Console.WriteLine(user.Password);
+					File.AppendAllText(UsersPath, user.Username);
 					users.Add(user);
 				}
 				catch (Exception ex)
@@ -122,10 +129,11 @@ namespace RegistrationWithC_Sharp
 			string TempUsername = Console.ReadLine();
 			Console.Write("Enter password:\t\t");
 			string TempPassword = Console.ReadLine();
-			Console.Write("Enter secret word:\t");
-			string TempSecretWord = Console.ReadLine();
+			//Console.Write("Enter secret word:\t");
+			//string TempSecretWord = Console.ReadLine();
 
-			Console.WriteLine("------------------------------------------------------------------------------------\n");
+			Line();
+			//Console.WriteLine("------------------------------------------------------------------------------------\n");
 			//char[] temp = Convert.ToString(OneUser[UserCount].Password).ToCharArray();
 
 			for (int i = 0; i < users.Count; i++)
@@ -135,7 +143,7 @@ namespace RegistrationWithC_Sharp
 					char[] stemp = users[i].Password.ToCharArray();
 
 					for (int j = 0; j < users[i].Password.Length; j++)
-						stemp[j] ^= TempSecretWord[j % TempSecretWord.Length];
+						stemp[j] ^= SecretWord[j % SecretWord.Length];
 
 					User temp = users[i];
 					temp.Password = "";
@@ -147,12 +155,32 @@ namespace RegistrationWithC_Sharp
 
 					if (users[i].Password == TempPassword)
 					{
-						Console.WriteLine($"Welcome, {users[i].Name} {users[i].Surname}!");
+						Console.ForegroundColor = ConsoleColor.Green;
+						Console.WriteLine($"\n\nWelcome, {users[i].Name} {users[i].Surname}!");
+						Console.ForegroundColor = ConsoleColor.Gray;
 					}
 					else
-						Console.WriteLine("Wrong username or password!");
+					{
+						Console.ForegroundColor = ConsoleColor.Red;
+						Console.WriteLine("\n\nWrong username or password!");
+						Console.ForegroundColor = ConsoleColor.Gray;
+					}
+				}
+				else
+				{
+					Console.ForegroundColor = ConsoleColor.Red;
+					Console.WriteLine("\n\nWrong username or password!");
+					Console.ForegroundColor = ConsoleColor.Gray;
 				}
 			}
+		}
+//-----------------------------------------------------------------------------------------------------
+		static void Line()
+		{
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			for (int i = 0; i < 85; i++)
+				Console.Write('-');
+			Console.ForegroundColor = ConsoleColor.Gray;
 		}
 //-----------------------------------------------------------------------------------------------------
 		static void Pause()
@@ -160,7 +188,7 @@ namespace RegistrationWithC_Sharp
 			Console.Write("Press any key to continue . . . ");
 			Console.ReadKey(true);
 		}
-        //-----------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------
         static string[] menuList = {"Sign Up", "Log In", "Exit" };
 
         static void Menu(int select)
@@ -182,12 +210,13 @@ namespace RegistrationWithC_Sharp
         static void Main(string[] args)
 		{
             int select = 0;
-//			bool registered = false;
+			//bool registered = false;
 
             Console.CursorVisible = false;
             while (true)
 			{
                 Menu(select);
+                //Pause();
 				//Console.WriteLine("1. Sign Up\n2. Log In\n3. Exit");
 
                 //Console.WriteLine("------------------------------------------------------------------------------------\n");
@@ -197,25 +226,49 @@ namespace RegistrationWithC_Sharp
 				switch (key)
 				{
                     case ConsoleKey.DownArrow: // 1 49 ConsoleKey.DownArrow
-                        //registered = Registration(registered);
-                        if (select )
-                        {
-
-                        }
-                        Registration();
-                        Pause();
-                        Console.Clear();
+						if (select < menuList.Length - 1)
+							select++;
                         break;
                     case ConsoleKey.UpArrow: // 2 50 ConsoleKey.UpArrow
-                        LogIn();
-                        Pause();
-                        Console.Clear();
-                        break;
+						if (select > 0)
+							select--;
+						break;
                     case ConsoleKey.Enter: // 3 51 ConsoleKey.RightArrow
-                        Environment.Exit(0);
-                        break;
-                }
-
+						{ 
+							Console.Clear();
+							Console.CursorVisible = true;
+							if (select == 0)
+							{
+								Registration();
+								Pause();
+								Console.Clear();
+							}
+							else if (select == 1)
+							{
+								if (users.Count != 0)
+									LogIn();
+								else
+								{
+									Console.CursorVisible = false;
+									Console.WriteLine("No user!\nU want to create?");
+									if (Console.ReadKey(true).Key == ConsoleKey.Spacebar)
+									{
+										Console.CursorVisible = true;
+										Registration();
+									}
+								}
+								Pause();
+								Console.Clear();
+							}
+							else
+							{ 
+								Console.ForegroundColor = ConsoleColor.Gray;
+								Environment.Exit(0);
+							}
+							break;
+						}
+				}
+				Console.CursorVisible = false;
                         //case 49: // 1 49 ConsoleKey.DownArrow
                         //	//registered = Registration(registered);
                         //	Registration();
