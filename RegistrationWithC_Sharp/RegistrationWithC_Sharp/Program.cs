@@ -18,6 +18,9 @@ namespace RegistrationWithC_Sharp
 
 		static string SecretWord = "Qwerty";
 
+		//static char[] userCheckCount = null;
+
+		static List<bool> userCheckCount = new List<bool>();
 		static bool Registration(/*bool reg*/)
 		{
 			//if (reg)
@@ -39,9 +42,13 @@ namespace RegistrationWithC_Sharp
 					else
 						user.Name = tempCheck;
 //					File.AppendAllText(UsersPath, user.Name + '\n');
-                    
+					
 					Console.Write("Enter your surname:\t\t");
-					user.Surname = Console.ReadLine();
+					tempCheck = Console.ReadLine();
+					if (tempCheck == "exit")
+						return false;
+					else
+						user.Surname = tempCheck;
 //					File.AppendAllText(UsersPath, user.Surname + '\n');
 
 					Console.Write("Enter your age:\t\t\t");
@@ -73,20 +80,20 @@ namespace RegistrationWithC_Sharp
 					Console.WriteLine(user.Password);
 					Console.ForegroundColor = ConsoleColor.Gray;
 					
-                    using (StreamWriter sw = new StreamWriter(UsersPath, true))
-                    {
-                        //sw.WriteLine("Name:\t\t" + user.Name);
-                        //sw.WriteLine("Surname:\t" + user.Surname);
-                        //sw.WriteLine("Age:\t\t" + user.Age);
-                        //sw.WriteLine("Username:\t" + user.Username);
-                        //sw.WriteLine("Password:\t" + user.Password);
-                        sw.WriteLine(user.Name);
-                        sw.WriteLine(user.Surname);
-                        sw.WriteLine(user.Age);
-                        sw.WriteLine(user.Username);
-                        sw.WriteLine(user.Password);
-                        sw.WriteLine("----------------------------------");
-                    }
+					using (StreamWriter sw = new StreamWriter(UsersPath, true))
+					{
+						//sw.WriteLine("Name:\t\t" + user.Name);
+						//sw.WriteLine("Surname:\t" + user.Surname);
+						//sw.WriteLine("Age:\t\t" + user.Age);
+						//sw.WriteLine("Username:\t" + user.Username);
+						//sw.WriteLine("Password:\t" + user.Password);
+						sw.WriteLine(user.Name);
+						sw.WriteLine(user.Surname);
+						sw.WriteLine(user.Age);
+						sw.WriteLine(user.Username);
+						sw.WriteLine(user.Password);
+						sw.WriteLine("----------------------------------");
+					}
 					char[] temp = user.Password.ToCharArray();
 
 					for (int i = 0; i < user.Password.Length; i++)
@@ -100,7 +107,8 @@ namespace RegistrationWithC_Sharp
 					//Console.WriteLine(user.Password);
 //					File.AppendAllText(UsersPath, user.Username);
 					users.Add(user);
-                }
+					userCheckCount.Add(false);
+				}
 				catch (Exception ex)
 				{
 					Console.WriteLine(ex.Message);
@@ -136,7 +144,7 @@ namespace RegistrationWithC_Sharp
 			return temp;
 		}
 //-----------------------------------------------------------------------------------------------------
-		static int LogIn()
+		static void LogIn()
 		{
 			Console.Clear();
 			Console.Write("Log In\nEnter username:\t\t");
@@ -164,35 +172,33 @@ namespace RegistrationWithC_Sharp
 					for (int j = 0; j < stemp.Length; j++)
 						temp.Password += stemp[j];
 
-                    users[i] = temp;
+					users[i] = temp;
 
 					if (users[i].Password == TempPassword)
 					{
-                        Console.ForegroundColor = ConsoleColor.Green;
+						Console.ForegroundColor = ConsoleColor.Green;
 						Console.WriteLine($"\n\nWelcome, {users[i].Name} {users[i].Surname}!");
 						Console.ForegroundColor = ConsoleColor.Gray;
-                        return i;
+						userCheckCount[i] = true;
 					}
 					else
 					{
 						Console.ForegroundColor = ConsoleColor.Red;
 						Console.WriteLine("\n\nWrong username or password!");
 						Console.ForegroundColor = ConsoleColor.Gray;
-                        return i;
-                    }
+					}
 				}
 				else
 				{
-                    if (i == users.Count - 1)
-                    {
-					    Console.ForegroundColor = ConsoleColor.Red;
-					    Console.WriteLine("\n\nWrong username or password!");
-					    Console.ForegroundColor = ConsoleColor.Gray;
-                        return i;
-                    }
-                    else
-                        continue;
-                }
+					if (i == users.Count - 1)
+					{
+						Console.ForegroundColor = ConsoleColor.Red;
+						Console.WriteLine("\n\nWrong username or password!");
+						Console.ForegroundColor = ConsoleColor.Gray;
+					}
+					else
+						continue;
+				}
 			}
 		}
 //-----------------------------------------------------------------------------------------------------
@@ -210,153 +216,162 @@ namespace RegistrationWithC_Sharp
 			Console.ReadKey(true);
 		}
 //-----------------------------------------------------------------------------------------------------
-        static string[] menuList = {"Sign Up", "Log In", "Exit" };
+		static string[] menuList = {"Sign Up", "Log In", "Exit" };
 
-        static void Menu(int? select)
-        {
-            for (int i = 0; i < menuList.Length; i++)
-            {
-                Console.SetCursorPosition(0, i);
-                Console.Write("          ");
-                Console.SetCursorPosition(0, i);
-                if (i == select)
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                else
-                    Console.ForegroundColor = ConsoleColor.Gray;
-
-                Console.WriteLine(menuList[i]);
-            }
-        }
-//-----------------------------------------------------------------------------------------------------
-        static void Message(User obj)
-        {
-            Menu(null);
-            Console.SetCursorPosition(0, 6);
-            for (int k = 0; k < 100; k++)
-                Console.WriteLine(" ");
-            Console.CursorVisible = true;
-            Console.SetCursorPosition(0, 6);
-            while (true)
-            {
-                int i = message.Count;
-                message[i].UserGetSet = obj;
-                Console.WriteLine($"[{message[i].UserGetSet.Surname} {message[i].UserGetSet.Name}]: ");
-                message[i].Text = Console.ReadLine();
-
-                Console.SetCursorPosition(0, i + 6);
-                Console.ForegroundColor = ConsoleColor.Magenta;
-                message[i].Date();
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.WriteLine(message[i].Text);
-
-                //using (StreamWriter sw = new StreamWriter(UsersPath, true))
-                //{
-                //    sw.WriteLine();
-                //}
-            }
-        }
-//-----------------------------------------------------------------------------------------------------
-        static void LoadUsers()
-        {
-            string[] temp = null;
-            string bufferPass = null;
-            if (File.Exists(UsersPath))
-            {
-                using (StreamReader sr = new StreamReader(UsersPath, true))
-                {
-                    temp = File.ReadAllLines(UsersPath);
-                    //for (int i = 0; sr.Peek() >= 0; i++, counter++)
-                    //{
-                    //    bufferLine = "";
-                    //    bufferLine = sr.ReadLine();
-                    //    if (bufferLine != "----------------------------------")
-                    //    {
-                    //        temp[i] = "";
-                    //        temp[i] = bufferLine;
-                    //    }
-                    //}
-
-                    for (int j = 0; j < temp.Length; j += 6)
-                    {
-                        //if (temp[j] != "----------------------------------")
-                        //{
-                            User us = new User
-                            {
-                                Name = temp[j],
-                                Surname = temp[j + 1],
-                                Age = Convert.ToInt32(temp[j + 2]),
-                                Username = temp[j + 3]
-                            };
-                            bufferPass = temp[j + 4];
-
-                            char[] stemp = bufferPass.ToCharArray();
-
-                            for (int t = 0; t < bufferPass.Length; t++)
-                                stemp[t] ^= SecretWord[t % SecretWord.Length];
-
-                            for (int z = 0; z < stemp.Length; z++)
-                                us.Password += stemp[z];
-
-                            users.Add(us);
-                        //}
-                    }
-                }
-                //while (sr.Peek() >= 0) // когда станет -1 выйдет
-                //sr.ReadBlock(us.Password.ToCharArray(), 14, 10);
-            }
-        }
-//-----------------------------------------------------------------------------------------------------
-        static void Main(string[] args)
+		static void Menu(int? select)
 		{
-            int select = 0;
+			for (int i = 0; i < menuList.Length; i++)
+			{
+				Console.SetCursorPosition(0, i);
+				Console.Write("          ");
+				Console.SetCursorPosition(0, i);
+				if (i == select)
+					Console.ForegroundColor = ConsoleColor.Cyan;
+				else
+					Console.ForegroundColor = ConsoleColor.Gray;
+
+				Console.WriteLine(menuList[i]);
+			}
+		}
+//-----------------------------------------------------------------------------------------------------
+		static void Message()
+		{
+			Menu(null);
+			Console.SetCursorPosition(0, 5);
+			for (int k = 0; k < 100; k++)
+				Console.WriteLine(" ");
+			Console.CursorVisible = true;
+			Console.SetCursorPosition(0, 5);
+			int NumOfActiveUser = 0;
+			for (int s = 0; s < userCheckCount.Count; s++)
+			{
+				if (userCheckCount[s])
+					NumOfActiveUser = s;
+			}
+			while (true)
+			{
+				int i = message.Count;
+				Message tempMes = new Message();
+				tempMes.UserGetSet = users[NumOfActiveUser];
+				Console.Write($"[{tempMes.UserGetSet.Surname} {tempMes.UserGetSet.Name}]: ");
+				tempMes.Text = Console.ReadLine();
+
+				Console.SetCursorPosition(0, i + 6);
+				Console.ForegroundColor = ConsoleColor.Magenta;
+				tempMes.Date;
+				Console.ForegroundColor = ConsoleColor.Gray;
+				Console.WriteLine(tempMes.Text);
+
+				using (StreamWriter sw = new StreamWriter(UsersPath, true))
+				{
+					sw.WriteLine($"{tempMes.Date}");
+				}
+				message.Add(tempMes);
+			}
+		}
+//-----------------------------------------------------------------------------------------------------
+		static void LoadUsers()
+		{
+			string[] temp = null;
+			string bufferPass = null;
+			if (File.Exists(UsersPath))
+			{
+				using (StreamReader sr = new StreamReader(UsersPath, true))
+				{
+					temp = File.ReadAllLines(UsersPath);
+					//for (int i = 0; sr.Peek() >= 0; i++, counter++)
+					//{
+					//    bufferLine = "";
+					//    bufferLine = sr.ReadLine();
+					//    if (bufferLine != "----------------------------------")
+					//    {
+					//        temp[i] = "";
+					//        temp[i] = bufferLine;
+					//    }
+					//}
+
+					for (int j = 0; j < temp.Length; j += 6)
+					{
+						//if (temp[j] != "----------------------------------")
+						//{
+							User us = new User
+							{
+								Name = temp[j],
+								Surname = temp[j + 1],
+								Age = Convert.ToInt32(temp[j + 2]),
+								Username = temp[j + 3]
+							};
+							bufferPass = temp[j + 4];
+
+							char[] stemp = bufferPass.ToCharArray();
+
+							for (int t = 0; t < bufferPass.Length; t++)
+								stemp[t] ^= SecretWord[t % SecretWord.Length];
+
+							for (int z = 0; z < stemp.Length; z++)
+								us.Password += stemp[z];
+
+							users.Add(us);
+							userCheckCount.Add(false);
+						//}
+					}
+				}
+				//while (sr.Peek() >= 0) // когда станет -1 выйдет
+				//sr.ReadBlock(us.Password.ToCharArray(), 14, 10);
+			}
+		}
+//-----------------------------------------------------------------------------------------------------
+		static void Main(string[] args)
+		{
+			int select = 0;
 			//bool registered = false;
 
-            Console.CursorVisible = false;
-            bool LogInCheck = false;
-            LoadUsers();
-            while (true)
+			Console.CursorVisible = false;
+			bool LogInCheck = false;
+			LoadUsers();
+			while (true)
 			{
-                Menu(select);
-                //Pause();
-                //Console.WriteLine("1. Sign Up\n2. Log In\n3. Exit");
+				Menu(select);
+				//Pause();
+				//Console.WriteLine("1. Sign Up\n2. Log In\n3. Exit");
 
-                Line();
-                //Console.WriteLine("------------------------------------------------------------------------------------\n");
+				Line();
+				//Console.WriteLine("------------------------------------------------------------------------------------\n");
 
-                if (message.Count == 0)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Date\t\tTime\t\tUser\t\tText");
-                    Console.WriteLine(@"                                     No Message!");
-                }
-                else
-                {
-                    for (int i = 0; i < message.Count; i++)
-                    {
-                        using (StreamReader sr = new StreamReader(MessagePath))
-                        {
-                            Console.WriteLine(sr.ReadLine());
-                        }
-                    }
-                }
+				if (message.Count == 0)
+				{
+					Console.WriteLine();
+					Console.WriteLine("Date\t\tTime\t\tUser\t\tText");
+					Console.WriteLine(@"                                     No Message!");
+				}
+				else
+				{
+					for (int i = 0; i < message.Count; i++)
+					{
+						using (StreamReader sr = new StreamReader(MessagePath))
+						{
+							Console.WriteLine(sr.ReadLine());
+						}
+					}
+				}
 
-                var key = Console.ReadKey(true).Key;
-                //select = Console.ReadKey(true).KeyChar;
+				var key = Console.ReadKey(true).Key;
+				//select = Console.ReadKey(true).KeyChar;
 				switch (key)
 				{
-                    case ConsoleKey.DownArrow: // 1 49 ConsoleKey.DownArrow
+					case ConsoleKey.DownArrow: // 1 49 ConsoleKey.DownArrow
 						if (select < menuList.Length - 1)
 							select++;
-                        break;
-                    case ConsoleKey.UpArrow: // 2 50 ConsoleKey.UpArrow
+						break;
+					case ConsoleKey.UpArrow: // 2 50 ConsoleKey.UpArrow
 						if (select > 0)
 							select--;
 						break;
-                    case ConsoleKey.Tab:
-                        if (LogInCheck)
-                            Message();
-                        break;
-                    case ConsoleKey.Enter: // 3 51 ConsoleKey.RightArrow
+					case ConsoleKey.Tab:
+						if (LogInCheck)
+							Message();
+						break;
+					case ConsoleKey.Enter: // 3 51 ConsoleKey.RightArrow
 						{ 
 							Console.Clear();
 							Console.CursorVisible = true;
@@ -368,11 +383,12 @@ namespace RegistrationWithC_Sharp
 							}
 							else if (select == 1)
 							{
-                                if (users.Count != 0)
-                                {
-                                    Message(LogIn());
-                                    LogInCheck = true;
-                                }
+								if (users.Count != 0)
+								{
+									//Message(LogIn());
+									LogIn();
+									LogInCheck = true;
+								}
 								else
 								{
 									Console.CursorVisible = false;
@@ -395,20 +411,20 @@ namespace RegistrationWithC_Sharp
 						}
 				}
 				Console.CursorVisible = false;
-                        //case 49: // 1 49 ConsoleKey.DownArrow
-                        //	//registered = Registration(registered);
-                        //	Registration();
-                        //	Pause();
-                        //	Console.Clear();
-                        //	break;
-                        //case 50: // 2 50 ConsoleKey.UpArrow
-                        //	LogIn();
-                        //	Pause();
-                        //	Console.Clear();
-                        //	break;
-                        //case 51: // 3 51 ConsoleKey.RightArrow
-                        //	Environment.Exit(0);
-                        //	break;
+						//case 49: // 1 49 ConsoleKey.DownArrow
+						//	//registered = Registration(registered);
+						//	Registration();
+						//	Pause();
+						//	Console.Clear();
+						//	break;
+						//case 50: // 2 50 ConsoleKey.UpArrow
+						//	LogIn();
+						//	Pause();
+						//	Console.Clear();
+						//	break;
+						//case 51: // 3 51 ConsoleKey.RightArrow
+						//	Environment.Exit(0);
+						//	break;
 			}
 		}
 	}

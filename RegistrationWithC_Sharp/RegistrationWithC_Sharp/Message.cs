@@ -14,11 +14,7 @@ namespace RegistrationWithC_Sharp
 
         public User UserGetSet { get { return user; } set { user = value; } }
         public string Text { get { return text; } set { text = value; } }
-//-----------------------------------------------------------------------------------------------------
-        public void Date()
-        {
-            Console.WriteLine(date.Date + date.TimeOfDay);
-        }
+		public DateTime Date { get { return date; } set { date = value; } } 		
     }
 }
 //-----------------------------------------------------------------------------------------------------
