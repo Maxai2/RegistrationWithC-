@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+//-----------------------------------------------------------------------------------------------------
 namespace RegistrationWithC_Sharp
 {
     class Message
@@ -13,5 +13,12 @@ namespace RegistrationWithC_Sharp
         string text;
 
         public User UserGetSet { get { return user; } set { user = value; } }
+        public string Text { get { return text; } set { text = value; } }
+//-----------------------------------------------------------------------------------------------------
+        public void Date()
+        {
+            Console.WriteLine(date.Date + date.TimeOfDay);
+        }
     }
 }
+//-----------------------------------------------------------------------------------------------------
