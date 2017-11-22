@@ -288,7 +288,7 @@ namespace RegistrationWithC_Sharp
 
 			    tempMes.UserGetSet = users[NumOfActiveUser];
 
-                Console.SetCursorPosition(0, count + 1);
+                Console.SetCursorPosition(0, count + 2);
                 //Console.Write($"[{tempMes.UserGetSet.Surname} {tempMes.UserGetSet.Name}]: ");
                 Console.WriteLine("                                                         ");
                 Console.SetCursorPosition(0, count + 2);
@@ -300,8 +300,7 @@ namespace RegistrationWithC_Sharp
                     tempMes.Text = buffer;
 
                 Console.SetCursorPosition(0, count + 2);
-                for (int k = 0; k < tempMes.Text.Length + 6; k++)
-                    Console.WriteLine(" ");
+                Console.WriteLine("                                                         ");
                 Console.SetCursorPosition(0, count + 2);
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write(DateTime.Now + ":");
@@ -375,6 +374,10 @@ namespace RegistrationWithC_Sharp
 			//bool registered = false;
 
 			Console.CursorVisible = false;
+            if (Directory.Exists(@"bin/Debug/Logs"))
+                Directory.CreateDirectory(@"bin/Debug/Logs");
+
+
 			LoadUsers();
 			while (true)
 			{
