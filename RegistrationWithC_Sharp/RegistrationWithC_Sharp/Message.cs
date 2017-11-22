@@ -9,12 +9,17 @@ namespace RegistrationWithC_Sharp
     class Message
     {
         User user;
-        DateTime date;
+//      DateTime date;
         string text;
 
         public User UserGetSet { get { return user; } set { user = value; } }
         public string Text { get { return text; } set { text = value; } }
-		public DateTime Date { get { return date; } set { date = value; } } 		
+
+		//public DateTime Date
+  //      {
+  //          get { return date; }
+  //          set { date = value;}
+  //      } 		
     }
 }
 //-----------------------------------------------------------------------------------------------------
