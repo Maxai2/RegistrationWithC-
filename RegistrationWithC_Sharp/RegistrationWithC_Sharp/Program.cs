@@ -269,7 +269,6 @@ namespace RegistrationWithC_Sharp
 				if (userCheckCount[s])
 					NumOfActiveUser = s;
 			}
-            Console.WriteLine($"                WELCOME to the CHAT ({users[NumOfActiveUser].Surname} {users[NumOfActiveUser].Name})");
 
             if (File.Exists(MessagePath))
             {
@@ -277,21 +276,25 @@ namespace RegistrationWithC_Sharp
 
                 for (int i = 0; i < TempMessage.Length; i++, count++)
                 {
-                    Console.SetCursorPosition(0, count + 2);
+                    Console.SetCursorPosition(0, count);
                     Console.WriteLine(TempMessage[i]);
                 }
             }
+            Console.Write($"\n                WELCOME to the CHAT ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"({users[NumOfActiveUser].Surname} {users[NumOfActiveUser].Name})");
+            Console.ForegroundColor = ConsoleColor.Gray;
 
-			while (true)
+            while (true)
 			{
 				Message tempMes = new Message();
 
 			    tempMes.UserGetSet = users[NumOfActiveUser];
 
-                Console.SetCursorPosition(0, count + 2);
+                Console.SetCursorPosition(0, count + 3);
                 //Console.Write($"[{tempMes.UserGetSet.Surname} {tempMes.UserGetSet.Name}]: ");
                 Console.WriteLine("                                                         ");
-                Console.SetCursorPosition(0, count + 2);
+                Console.SetCursorPosition(0, count + 3);
                 Console.Write("Text: ");
 				buffer = Console.ReadLine();
                 if (buffer == "exit")
@@ -299,13 +302,13 @@ namespace RegistrationWithC_Sharp
                 else
                     tempMes.Text = buffer;
 
-                Console.SetCursorPosition(0, count + 2);
+                Console.SetCursorPosition(0, count + 3);
                 Console.WriteLine("                                                         ");
-                Console.SetCursorPosition(0, count + 2);
+                Console.SetCursorPosition(0, count + 3);
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write(DateTime.Now + ":");
 				Console.ForegroundColor = ConsoleColor.Gray;
-				Console.SetCursorPosition(21, count + 2);
+				Console.SetCursorPosition(21, count + 3);
 				Console.WriteLine(tempMes.Text);
                 count++;
 
@@ -374,8 +377,8 @@ namespace RegistrationWithC_Sharp
 			//bool registered = false;
 
 			Console.CursorVisible = false;
-            if (Directory.Exists(@"bin/Debug/Logs"))
-                Directory.CreateDirectory(@"bin/Debug/Logs");
+            if (!Directory.Exists(@"Logs"))
+                Directory.CreateDirectory(@"Logs");
 
 
 			LoadUsers();
